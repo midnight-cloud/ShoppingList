@@ -5,7 +5,7 @@ import com.example.shoppinglist.domain.ShopListRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-object ShopListRepoImpl : ShopListRepo {
+class ShopListRepoImpl : ShopListRepo {
 
     private val shopListSF = MutableStateFlow(listOf<ShopItem>())
     private val shopList = mutableListOf<ShopItem>()
@@ -13,7 +13,7 @@ object ShopListRepoImpl : ShopListRepo {
     private var autoIncrementId = 0
 
     init {
-        for (i in 0 until 10){
+        for (i in 0 until 20){
             val item = ShopItem("Name $i", i, isEnabled = true)
             addShopItem(item)
         }
@@ -48,6 +48,8 @@ object ShopListRepoImpl : ShopListRepo {
     }
 
     private fun updateList() {
-        shopListSF.value = shopList.toList()
+        shopListSF.value = shopList.sortedWith(compareBy(
+            {!(it.isEnabled)}, {it.id}
+        )).toList()
     }
 }
